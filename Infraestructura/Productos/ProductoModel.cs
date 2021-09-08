@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -84,11 +85,84 @@ namespace Infraestructura.Productos
 
             return index <= 0 ? null : productos[index];
 
+        }
 
+        public Producto[] GetProductosByUnidadaMedida(UnidadMedida um)
+        {
+            Producto[] tmp = null;
+            if(productos == null)
+            {
+                return tmp;
+            }
+
+
+            foreach (Producto p in productos)
+            {
+                if (p.UnidadMedida== um)
+                {
+                    Add(p, ref tmp);
+                }
+            }
+
+            return tmp;
+        }
+        
+        public Producto[] GetProductoByVencimiento(DateTime dt)
+        {
+
+            Producto[] tmp = null;
+            if (productos == null)
+            {
+                return tmp;
+            }
+
+            foreach(Producto p in productos)
+            {
+                if (p.FechaVencimiento.CompareTo(dt)<=0)
+                {
+                    Add(p, ref tmp);
+                }
+            }
+
+
+
+
+            return tmp;
+        }
+
+        public Producto[]GetProductosByRangoPrecio(decimal start,decimal end)
+        {
+
+            Producto[] tmp = null;
+            if (productos == null)
+            {
+                return tmp;
+            }
+
+            foreach (Producto p in productos) 
+            {
+                if(p.Precio >= start&& p.Precio <= end)
+                {
+                    Add(p, ref tmp);
+                }
+            }
+
+            return tmp;
 
         }
 
+        public Producto[] GrtProductoOrderByPrecio()
+        {
+            Array.Sort(productos,new Producto.ProductoPrecioComparer() );
 
+            return productos;
+        }
+
+
+        public string GetProductosAsJson()
+        {
+            return JsonConverter.SerializeObject(productos);
+        }
         #endregion
 
 
